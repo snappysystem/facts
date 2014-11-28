@@ -1,0 +1,27 @@
+<html>
+<!-- A html template for rendering question page-->
+<head>
+<style type="text/css">
+<!--
+.mobile {font-family: Arial; font-size: 600%;}
+.snap {font-family: Arial; font-size: 300%; color: #0066cc;}
+-->
+</style>
+</head>
+
+<body><table><tr><td><table>
+  <tr><td class="snap">made {{printf "%d" .Errors}} errors so far</td></tr>
+</table></td></tr><tr><td><table><tr><td>
+  <td class="snap">{{printf "%d" .Total}}) </td>
+  <td class="mobile">{{printf "%d" .X}}</td>
+  <td class= "mobile">{{.Opstr }}</td>
+  <td class="mobile">{{.Y}}=</td>
+</tr></table></td></tr>
+<tr><td><table><tr>
+<td><form action="/next" method="post">
+	<input type="text" name="answer" class="mobile">
+	<input type="submit" value="Send" class="mobile">
+</form></td>
+</tr></table></td></tr>
+</table></body>
+</html>
