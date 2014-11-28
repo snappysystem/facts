@@ -81,6 +81,21 @@ type WelcomePage struct {
 	NumFacts int
 }
 
+// template parameters for reporting result
+type ResultPage struct {
+	// number of erros made in the session
+	Errors int
+
+	// total number of questions in the session
+	NumFacts int
+
+	// total minutes spent to finish the session
+	TimeInMin int
+
+	// remaining seconds spent to finish the session
+	TimeInSec int
+}
+
 // create a session for new user/client
 func NewSession() *Session {
 	ts := time.Now()
@@ -144,10 +159,10 @@ func EmitQuestion(w http.ResponseWriter, s *Session) {
 	http.SetCookie(w, &c)
 
 	page := QuestionPage{
-		X:      s.x,
-		Y:      s.y,
-		Total:  s.total,
-		Errors: s.errors,
+		X:        s.x,
+		Y:        s.y,
+		Total:    s.total,
+		Errors:   s.errors,
 		NumFacts: maxNumQuestions,
 	}
 
@@ -163,6 +178,29 @@ func EmitQuestion(w http.ResponseWriter, s *Session) {
 	}
 
 	t, err := template.ParseFiles("question.html")
+	if err != nil {
+		fmt.Println("Fails to parse template file:", err)
+	}
+
+	err = t.Execute(w, page)
+	if err != nil {
+		fmt.Println("Fails to run html template:", err)
+	}
+}
+
+// render result page
+func EmitSessionResult(w http.ResponseWriter, s *Session) {
+	duration := time.Now().Sub(s.start)
+	mins := int(duration.Minutes())
+
+	page := ResultPage{
+		Errors:    s.errors,
+		NumFacts:  maxNumQuestions,
+		TimeInMin: mins,
+		TimeInSec: int(duration.Seconds()) - mins*60,
+	}
+
+	t, err := template.ParseFiles("result.html")
 	if err != nil {
 		fmt.Println("Fails to parse template file:", err)
 	}
@@ -303,7 +341,11 @@ func handleNextQuestion(w http.ResponseWriter, r *http.Request) {
 		session.NextInput()
 	}
 
-	EmitQuestion(w, session)
+	if session.total <= maxNumQuestions {
+		EmitQuestion(w, session)
+	} else {
+		EmitSessionResult(w, session)
+	}
 }
 
 func main() {

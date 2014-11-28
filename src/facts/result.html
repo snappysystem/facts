@@ -1,0 +1,19 @@
+<html>
+<head>
+<style type="text/css">
+<!--
+.snap {font-family: Arial; font-size: 300%; color: #0066cc;}
+-->
+</style>
+</head>
+<body>
+<p class="snap">Congratulations, you've finished your assignment. You spent
+{{printf "%d" .TimeInMin}} minutes, {{printf "%d" .TimeInSec}} seconds to finish
+this work. You made {{printf "%d" .Errors}} errors in {{printf "%d" .NumFacts}}
+total questions.</p>
+<br>
+<td><form action="/" method="post">
+	<input type="submit" value="Start a new facts session" class="snap">
+</form></td>
+</body>
+</html>
