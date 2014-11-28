@@ -71,6 +71,9 @@ type QuestionPage struct {
 
 	// total number of errors made so far
 	Errors int
+
+	// total number of facts(questions) in the session
+	NumFacts int
 }
 
 // template parameters for welcome page
@@ -145,6 +148,7 @@ func EmitQuestion(w http.ResponseWriter, s *Session) {
 		Y:      s.y,
 		Total:  s.total,
 		Errors: s.errors,
+		NumFacts: maxNumQuestions,
 	}
 
 	switch s.ops {
@@ -295,6 +299,7 @@ func handleNextQuestion(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 		// generate the first question for the session
+		session.total++
 		session.NextInput()
 	}
 
